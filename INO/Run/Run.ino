@@ -27,8 +27,9 @@ CapacitiveSensor   s15 = CapacitiveSensor(A1,A4);
 CapacitiveSensor   s16 = CapacitiveSensor(A1,A5);
 
 CapacitiveSensor sns[16] = {s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16};
-int snq = 16;
-byte outBufMem[17];
+const int snq = 16;
+const int dataSize = 18;
+byte outBufMem[dataSize];
 //int ir = 0;
 void setup()                    
 {     // turn off autocalibrate on channel 1 - just as an example
@@ -38,7 +39,6 @@ void setup()
    {
     sns[i].set_CS_AutocaL_Millis(0xFFFFFFFF);
    }
-   Serial.print('70000000000000000');
    
    
 }
@@ -56,13 +56,15 @@ void loop()
         }  
       }
     }
-    byte outBuf[17];
-    outBuf[0] = 7;
+    byte outBuf[dataSize];
+    outBuf[0] = 2;
+    outBuf[17] = 3;
+    
     for (int i = 0; i < snq; i++)
     {
-      if(sns[i].capacitiveSensor(8) > 60)
+      if(sns[i].capacitiveSensor(6) > 40)
       {
-        outBuf[1+i] = 1;
+        outBuf[i+1] = 1;
       }
       else
       {
@@ -72,13 +74,13 @@ void loop()
 
     }
 
-    if (memcmp(outBuf, outBufMem, 17) != 0)
+    if (memcmp(outBuf, outBufMem, dataSize) != 0)
     {
-      for (int i = 0; i < 17; i++)
+      for (int i = 0; i < dataSize; i++)
       {
-        Serial.print(outBuf[i], DEC);
+        Serial.print(outBuf[i], HEX);
       }
-      memcpy(outBufMem, outBuf, 17); 
+      memcpy(outBufMem, outBuf, dataSize); 
     }
     /*int ir_state = 0;
     int ir_check = 0;

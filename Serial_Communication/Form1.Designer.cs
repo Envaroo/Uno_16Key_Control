@@ -42,6 +42,7 @@
             this.label_status = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.Recalibrate = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // comboBox_port
@@ -54,7 +55,7 @@
             // 
             // button_connect
             // 
-            this.button_connect.Location = new System.Drawing.Point(536, 300);
+            this.button_connect.Location = new System.Drawing.Point(391, 34);
             this.button_connect.Name = "button_connect";
             this.button_connect.Size = new System.Drawing.Size(97, 44);
             this.button_connect.TabIndex = 1;
@@ -64,7 +65,7 @@
             // 
             // button_disconnect
             // 
-            this.button_disconnect.Location = new System.Drawing.Point(661, 300);
+            this.button_disconnect.Location = new System.Drawing.Point(391, 84);
             this.button_disconnect.Name = "button_disconnect";
             this.button_disconnect.Size = new System.Drawing.Size(97, 44);
             this.button_disconnect.TabIndex = 1;
@@ -147,14 +148,25 @@
             // 
             this.panel1.Location = new System.Drawing.Point(14, 34);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(474, 201);
+            this.panel1.Size = new System.Drawing.Size(371, 201);
             this.panel1.TabIndex = 9;
+            // 
+            // Recalibrate
+            // 
+            this.Recalibrate.Location = new System.Drawing.Point(391, 134);
+            this.Recalibrate.Name = "Recalibrate";
+            this.Recalibrate.Size = new System.Drawing.Size(97, 44);
+            this.Recalibrate.TabIndex = 10;
+            this.Recalibrate.Text = "Recalibrate";
+            this.Recalibrate.UseVisualStyleBackColor = true;
+            this.Recalibrate.Click += new System.EventHandler(this.Recalibrate_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(768, 367);
+            this.Controls.Add(this.Recalibrate);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label_status);
@@ -190,6 +202,7 @@
         private System.Windows.Forms.Label label_status;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button Recalibrate;
     }
 }
 

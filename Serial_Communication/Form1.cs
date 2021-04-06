@@ -37,9 +37,14 @@ namespace Serial_Communication
                 serialPort1.StopBits = StopBits.One;
                 serialPort1.Parity = Parity.None;
                 serialPort1.DataReceived += new SerialDataReceivedEventHandler(serialPort1_DataReceived); //이것이 꼭 필요하다
-
-                serialPort1.Open();  //시리얼포트 열기
-
+                try
+                {
+                    serialPort1.Open();  //시리얼포트 열기
+                }
+                catch (Exception ex)
+                {
+                    richTextBox_received.Text = ex.ToString();
+                }
                 label_status.Text = "Connected";
                 comboBox_port.Enabled = false;  //COM포트설정 콤보박스 비활성화
             }
@@ -51,50 +56,75 @@ namespace Serial_Communication
 
         private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)  //수신 이벤트가 발생하면 이 부분이 실행된다.
         {
-            this.Invoke(new EventHandler(MySerialReceived));  //메인 쓰레드와 수신 쓰레드의 충돌 방지를 위해 Invoke 사용. MySerialReceived로 이동하여 추가 작업 실행.
+            try
+            {
+                this.Invoke(new EventHandler(MySerialReceived));  //메인 쓰레드와 수신 쓰레드의 충돌 방지를 위해 Invoke 사용. MySerialReceived로 이동하여 추가 작업 실행.
+            }
+            catch
+            {
+
+            }
         }
 
         private void MySerialReceived(object s, EventArgs e)  //여기에서 수신 데이타를 사용자의 용도에 따라 처리한다.
         {
-            int RecSize = serialPort1.BytesToRead;
-            string inp = string.Empty;
-            richTextBox_received.Text = RecSize.ToString() + '\n';
-            if (RecSize == 17)
+            string rawData = serialPort1.ReadTo("3");
+            string trimmedData = rawData.Substring(rawData.LastIndexOf("2") + 1, 16);
+            byte[] sharedBuff = new byte[32];
+            for (int i = 0; i < trimmedData.Length; i++)
             {
-                byte[] buff = new byte[RecSize];
-                byte[] sharedBuff = new byte[32];
-                serialPort1.Read(buff, 0, RecSize);
-                if (buff[0] == '7')
+                if (trimmedData[i] == '1')
                 {
-                    for (int i = 0; i < RecSize - 1; i++)
-                    {
-                        if (buff[i + 1] == '1')
-                        {
-                            DrawSquare(23 * i, 20, true);
-                            sharedBuff[31 - i * 2] = 128;
-                            sharedBuff[31 - i * 2 - 1] = 128;
-                        }
-                        else
-                        {
-                            DrawSquare(23 * i, 20, false);
-                            sharedBuff[31 - i * 2] = 0;
-                            sharedBuff[31 - i * 2 - 1] = 0;
-                        }
-
-                    }
-
-
-                    sharedBufferAccessor.WriteArray<byte>(6, sharedBuff, 0, 32);
+                    DrawSquare(23 * i, 20, true);
+                    sharedBuff[31 - i * 2] = 128;
+                    sharedBuff[31 - i * 2 - 1] = 128;
                 }
-                for (int i = 0; i < RecSize; i++)
+                else
                 {
-                    inp += " " + Convert.ToChar(buff[i]);
+                    DrawSquare(23 * i, 20, false);
+                    sharedBuff[31 - i * 2] = 0;
+                    sharedBuff[31 - i * 2 - 1] = 0;
+                }
+            }
+            sharedBufferAccessor.WriteArray<byte>(6, sharedBuff, 0, 32);
+            richTextBox_received.Text = trimmedData.Length.ToString();
+            /*
+        int RecSize = serialPort1.BytesToRead;
+        string inp = string.Empty;
+        richTextBox_received.Text = RecSize.ToString() + '\n';
+        if (serialPort1.ReadByte() == '7')
+        {
+            byte[] buff = new byte[RecSize];
+            byte[] sharedBuff = new byte[32];
+            serialPort1.Read(buff, 0, RecSize);
+            for (int i = 0; i < RecSize - 1; i++)
+            {
+                if (buff[i + 1] == '1')
+                {
+                    DrawSquare(23 * i, 20, true);
+                    sharedBuff[31 - i * 2] = 128;
+                    sharedBuff[31 - i * 2 - 1] = 128;
+                }
+                else
+                {
+                    DrawSquare(23 * i, 20, false);
+                    sharedBuff[31 - i * 2] = 0;
+                    sharedBuff[31 - i * 2 - 1] = 0;
                 }
 
             }
 
+
+            sharedBufferAccessor.WriteArray<byte>(6, sharedBuff, 0, 32);
+            for (int i = 0; i < RecSize; i++)
+            {
+                inp += " " + Convert.ToChar(buff[i]);
+            }
+
+        }
+*/
             //시리얼 버터에 수신된 데이타를 ReceiveData 읽어오기
-            richTextBox_received.Text += inp;  //int 형식을 string형식으로 변환하여 출력
+            ///richTextBox_received.Text += inp;  //int 형식을 string형식으로 변환하여 출력
             //string.Format("{0:X2}", ReceiveData);
         }
 
@@ -112,11 +142,6 @@ namespace Serial_Communication
                 g.FillRectangle(Brushes.Red, rect);
             }
             g.Dispose();
-        }
-
-        public void WriteMemory(byte[] buff)
-        {
-
         }
 
         private void Button_send_Click(object sender, EventArgs e)  //보내기 버튼을 클릭하면
@@ -143,6 +168,12 @@ namespace Serial_Communication
         private void button1_Click(object sender, EventArgs e)
         {
             richTextBox_received.Clear();
+        }
+
+        private void Recalibrate_Click(object sender, EventArgs e)
+        {
+            if (serialPort1.IsOpen)
+                serialPort1.Write("a");
         }
     }
 }

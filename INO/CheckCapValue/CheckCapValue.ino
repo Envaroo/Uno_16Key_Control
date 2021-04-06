@@ -9,29 +9,29 @@
  */
 
 
-CapacitiveSensor   s1 = CapacitiveSensor(4,13);        // 10M resistor between pins 4 & 2, pin 2 is sensor pin, add a wire and or foil if desired
-CapacitiveSensor   s2 = CapacitiveSensor(4,12);        // 10M resistor between pins 4 & 6, pin 6 is sensor pin, add a wire and or foil
-CapacitiveSensor   s3 = CapacitiveSensor(4,11);        // 10M resistor between pins 4 & 8, pin 8 is sensor pin, add a wire and or foil
-CapacitiveSensor   s4 = CapacitiveSensor(4,10); 
-CapacitiveSensor   s5 = CapacitiveSensor(4,9); 
-CapacitiveSensor   s6 = CapacitiveSensor(4,8); 
-CapacitiveSensor   s7 = CapacitiveSensor(4,7); 
-CapacitiveSensor   s8 = CapacitiveSensor(4,6); 
-CapacitiveSensor   s9 = CapacitiveSensor(2,22);
-CapacitiveSensor   s10 = CapacitiveSensor(2,24);
-CapacitiveSensor   s11 = CapacitiveSensor(2,26);
-CapacitiveSensor   s12 = CapacitiveSensor(2,28);
-CapacitiveSensor   s13 = CapacitiveSensor(2,30);
-CapacitiveSensor   s14 = CapacitiveSensor(2,32);
-CapacitiveSensor   s15 = CapacitiveSensor(2,34);
-CapacitiveSensor   s16 = CapacitiveSensor(2,36);
+CapacitiveSensor   s1 = CapacitiveSensor(A0,13);        // 10M resistor between pins 4 & 2, pin 2 is sensor pin, add a wire and or foil if desired
+CapacitiveSensor   s2 = CapacitiveSensor(A0,12);        // 10M resistor between pins 4 & 6, pin 6 is sensor pin, add a wire and or foil
+CapacitiveSensor   s3 = CapacitiveSensor(A0,11);        // 10M resistor between pins 4 & 8, pin 8 is sensor pin, add a wire and or foil
+CapacitiveSensor   s4 = CapacitiveSensor(A0,10); 
+CapacitiveSensor   s5 = CapacitiveSensor(A0,9); 
+CapacitiveSensor   s6 = CapacitiveSensor(A0,8); 
+CapacitiveSensor   s7 = CapacitiveSensor(A0,7); 
+CapacitiveSensor   s8 = CapacitiveSensor(A0,6); 
+CapacitiveSensor   s9 = CapacitiveSensor(A1,5);
+CapacitiveSensor   s10 = CapacitiveSensor(A1,4);
+CapacitiveSensor   s11 = CapacitiveSensor(A1,3);
+CapacitiveSensor   s12 = CapacitiveSensor(A1,2);
+CapacitiveSensor   s13 = CapacitiveSensor(A1,A2);
+CapacitiveSensor   s14 = CapacitiveSensor(A1,A3);
+CapacitiveSensor   s15 = CapacitiveSensor(A1,A4);
+CapacitiveSensor   s16 = CapacitiveSensor(A1,A5);
 
 CapacitiveSensor sns[16] = {s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16};
 int snq = 16;
 //int ir = 0;
 void setup()                    
 {     // turn off autocalibrate on channel 1 - just as an example
-   Serial.begin(2000000);
+   Serial.begin(115200);
    //pinMode(ir, INPUT);
    for (int i = 0; i < snq; i++)
    {
@@ -58,7 +58,7 @@ void loop()
     
     for (int i = 0; i < snq; i++)
     {
-    Serial.print(sns[i].capacitiveSensor(8));
+    Serial.print(sns[i].capacitiveSensor(6));
     Serial.print('\t');
     }
     /*int ir_state = 0;
